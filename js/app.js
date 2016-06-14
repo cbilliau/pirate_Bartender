@@ -7,13 +7,22 @@ function Bartender (questions) {
 
 Bartender.prototype.askQuestions = function (questionsToAsk) {
 		var answer = true; //...send each ques to View; Resp returns.
-		// userAnswer assigned true/false
+		// Assign true/false (i.e. answer)
 		questionsToAsk.userAnswer = answer;
 		console.log(questionsToAsk);
 		alert('question/ans process simulate');
 };
 
-Bartender.prototype.createDrink = function () {};
+Bartender.prototype.createDrink = function () {
+// 1) instantiate a pantry
+	var drinksPantry = new Pantry(drinksIngredients, Database.drinksPreferences);
+	// console.log(drinksPantry);
+// 3) Generate rndm list of ingredients based on prefs
+	var drinkRecipe = drinksPantry.fetchRandom(drinksPantry);
+// 4) Return drink ingredients
+	return drinkRecipe;
+// 5 (later add ons: drink name generate, etc...)
+};
 
 // Question class
 function Question (text, flavor) {
@@ -37,36 +46,30 @@ function Preferences (flavor)	{
 }
 
 // Ingredients class
-function Ingredients (flavor, description)	{
+function Ingredients (flavor, ingredient)	{
 	this.flavor = flavor;
-	this.description = description;
+	this.ingredient = ingredient;
 }
 
 // Pantry class
-function Pantry (ingredients) {
+function Pantry (ingredients, preferences) {
   this.ingredients = ingredients;
+	this.preferences = preferences;
 }
-/**
- * METHOD: fetchRandom
- * Desc: Retrieves a random ingredient object based on flavor
- * @flavor - String
- * RETURNS - Object - of class Ingredient
- */
-Pantry.prototype.fetchRandom = function(flavor) {
-  var returnedIngredient;
-  var filteredIngredients = [];
 
-  this.ingredients.forEach(function(ingredient){
-    if (ingredient.flavor === flavor) {
-      filteredIngredients.push(ingredient);
-    }   // determine length of filteredIngredients; select random index of array; return element at random index
-  });
-
-  	return returnedIngredient;
+Pantry.prototype.fetchRandom = function(ingredients, preferences) {
+	// Def var holding rndm ingredients
+	var filteredIngredients = [];
+	// loop through preferences and rndmly assign ingredient for each flavor where userAnswer = true.
+	for (var i = 0, alength=this.ingredients.length; i < alength; i++){
+			if (this.preferences[i].userPreference == true) {
+				filteredIngredients.push(this.ingredients[i].ingredient[(Math.floor((Math.random() * (3 - 0))))])
+			}
+		}
+  return filteredIngredients;
 };
 
 // STATIC DATA
-
 var Database = {
   drinksQuestions: [
 		//Instanciates a new Question obj from Question class into each array index.
@@ -85,29 +88,32 @@ var Database = {
 	]
 }
 
-var drinksPantry = new Pantry([ /* array of ingredients */ ]);
-var foodPantry = new Pantry([ /* array of ingredients */ ]);
+// Drink ingredients
+var drinksIngredients = [
+	new Ingredients('Strong', ['Glug of rum', 'slug of whisky', 'splash of gin']),
+	new Ingredients('Salty', ['Olive on a stick', 'salt-dusted rim', 'rasher of bacon']),
+	new Ingredients('Bitter', ['Shake of bitters', 'splash of tonic', 'twist of lemon peel']),
+	new Ingredients('Sweet', ['Sugar cube', 'spoonful of honey', 'splash of cola']),
+	new Ingredients('Fruity', ['Slice of orange', 'dash of cassis', 'cherry on top'])
+	]
 
-drinksPantry.ingredients; // => one array
-foodPantry.ingredients; // => different array
+// var foodPantry = new Pantry([ /* array of ingredients */ ]);
 
-
-// Test different user flows:
-
+// on application load:
 $(function()	{
-	// on application load:
 	// 1) instantiate a bartender
 	var drinksBartender = new Bartender(Database.drinksQuestions);
 	// 2) bartender starts asking questions
 	for (var i=0, length=drinksBartender.questions.length; i<length; i++) {
 		// 3) user responds to each question
 		drinksBartender.askQuestions(drinksBartender.questions[i]);
-		// 3.1 Response for each ? rec in Preferences
+		// 4 Response for each ? rec in Preferences
 		Database.drinksPreferences[i].userPreference  = drinksBartender.questions[i].userAnswer;
 	};
-
-	// 4) bartender creates drink
-	// 5) log out drink info
+	// 5) bartender creates drink
+	var recipe = drinksBartender.createDrink();
+	// 6) log out drink info
+	console.log(recipe);
 });
 
 	/*
@@ -124,5 +130,13 @@ $(function()	{
   // classes should begin with capital letters
 // Instances -- objects created from a Class
   // instances should begin with lowercase letters
+
+// Original notes from createDrink
+		// this.ingredients.forEach(function(item,index){
+		  // 	console.log(item, index);
+			// if (ingredient.flavor === flavor) {
+			// 	filteredIngredients.push(ingredient);
+			// }   // determine length of filteredIngredients; select random index of array; return element at random index
+
 
 // you definitely want to create a preferences object of some kind that the bartender holds onto -- you don't want the userResponse in the question object.  thinking about if the bartender needs to serve multiple drinks, he needs to be able to erase the preferences object and start again.  if the info's being logged in the question objects, you've got to recreate 5 question objects every time which doesn't make sense since they're mostly static data.
