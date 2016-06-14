@@ -27,10 +27,14 @@ function Question (text, flavor) {
  * RETURNS - Boolean
  */
 Question.prototype.questionAnswered = function(){
-	console.log(this.userAnswer);
   return this.userAnswer !== null;
 }
 
+// Preferences class
+function Preferences (flavor)	{
+	this.flavor = flavor;
+	this.userPreference = null;
+}
 
 // Ingredients class
 function Ingredients (flavor, description)	{
@@ -72,18 +76,14 @@ var Database = {
     new Question("Would ye like a bit of sweetness with yer poison?", 'sweet'),
     new Question("Are ye one for a fruity finish?", 'fruity')
   ],
-	drinksPreferences: []
+	drinksPreferences: [
+		new Preferences('strong'),
+		new Preferences('salty'),
+		new Preferences('bitter'),
+		new Preferences('sweet'),
+		new Preferences('fruity'),
+	]
 }
-
-//
-// var drinksBartender = new Bartender(Database.drinksQuestions);
-//
-// drinksBartender.questions[0].text
-// drinksBartender.questions[0].flavor // => 'strong'
-// drinksBartender.questions[0].userAnswer = true;
-// drinksBartender.questions[0].questionAnswered // => true/false?
-
-
 
 var drinksPantry = new Pantry([ /* array of ingredients */ ]);
 var foodPantry = new Pantry([ /* array of ingredients */ ]);
@@ -95,26 +95,29 @@ foodPantry.ingredients; // => different array
 // Test different user flows:
 
 $(function()	{
-// on application load:
-// 1) instantiate a bartender
+	// on application load:
+	// 1) instantiate a bartender
 	var drinksBartender = new Bartender(Database.drinksQuestions);
-// 2) bartender starts asking questions
+	// 2) bartender starts asking questions
 	for (var i=0, length=drinksBartender.questions.length; i<length; i++) {
-// 3) user responds to each question
+		// 3) user responds to each question
 		drinksBartender.askQuestions(drinksBartender.questions[i]);
-// 3.1 Response for each ? rec in Preferences
-		Database.drinksPreferences.push(drinksBartender.questions[i].userAnswer);
-		console.log(Database.drinksPreferences);
+		// 3.1 Response for each ? rec in Preferences
+		Database.drinksPreferences[i].userPreference  = drinksBartender.questions[i].userAnswer;
 	};
 
-
-
+	// 4) bartender creates drink
+	// 5) log out drink info
 });
 
+	/*
+	 *  Notes
+	 */
 
-
-// 4) bartender creates drink
-// 5) log out drink info
+// drinksBartender.questions[0].text
+// drinksBartender.questions[0].flavor // => 'strong'
+// drinksBartender.questions[0].userAnswer = true;
+// drinksBartender.questions[0].questionAnswered // => true/false?
 
 
 // Class -- blueprint for objects
