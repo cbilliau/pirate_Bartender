@@ -1,0 +1,54 @@
+body {
+	background-color: #000;
+	font-family: 'Press Start 2P', cursive;
+}
+.main	{
+	margin: 20px 20px;
+	height: auto;
+	width: auto;
+	max-width: 800px;
+	background-color: #000;
+	border: red 1px solid;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+.gameName {
+	margin: 20px auto;
+	height: 40px;
+	width: 400px;
+	padding: 0 0 6px 0;
+	background-color: #fff;
+	border: purple 4px solid;
+	color: #000;
+	text-align: center;
+}
+.gameName h1 {
+	margin: 2px 2px;
+}
+.imgBox	{
+	margin: 20px auto ;
+	height: 300px;
+	width: 250px;
+	background-color: #fff;
+	border: springgreen 4px solid;
+	color: #fff;
+	display: inline-block;
+
+}
+.textBox	{
+	margin: 20px 20px;
+	height: 250px;
+	width: 800px;
+	background-color: #fff;
+	border: darkorange 4px solid;
+	color: #000;
+	display: run-in;
+}
+.textBox h4 {
+	text-align: center;
+}
+.textBox p {
+	padding-left: 8px;
+	padding-right: 8px;
+}

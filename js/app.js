@@ -3,71 +3,111 @@
 // Bartender class
 function Bartender (questions) {
   this.questions = questions
+	this.currentQuestion = null;
+	this.userPreferences = {};
 }
 
-Bartender.prototype.askQuestions = function (questionsToAsk) {
-		var answer = true; //...send each ques to View; Resp returns.
-		// Assign true/false (i.e. answer)
-		questionsToAsk.userAnswer = answer;
-		console.log(questionsToAsk);
-		alert('question/ans process simulate');
+Bartender.prototype.startQuestions = function () {
+	this.currentQuestion = 0;
+	return true;
 };
 
-Bartender.prototype.createDrink = function () {
-// 1) instantiate a pantry
-	var drinksPantry = new Pantry(drinksIngredients, Database.drinksPreferences);
-	// console.log(drinksPantry);
-// 3) Generate rndm list of ingredients based on prefs
-	var drinkRecipe = drinksPantry.fetchRandom(drinksPantry);
-// 4) Return drink ingredients
-	return drinkRecipe;
-// 5 (later add ons: drink name generate, etc...)
+Bartender.prototype.fetchCurrentQuestion = function() {
+	return this.questions[this.currentQuestion];
+}
+
+/**
+ * nextQuestion
+ * Increments currentQuestion by 1
+ * RETURNS - Object - current question object
+ */
+Bartender.prototype.nextQuestion = function(){
+	// check if we're at the last question...
+	// if ( ) {}
+
+	++this.currentQuestion;
+	return this.questions[this.currentQuestion];
+}
+
+Bartender.prototype.onUserAnswer = function (answer) {
+	var question = this.questions[this.currentQuestion];
+	var flavor = question.flavor;
+	this.userPreferences[flavor] = answer;
+}
+
+Bartender.prototype.createDrink = function (pantry) {
+	var drink = [], prop, ingredient;
+
+	for (prop in this.userPreferences) {
+		if (this.userPreferences[prop]) {
+			ingredient = pantry.fetchRandom(prop);
+			drink.push(ingredient.description);
+		}
+	}
+
+	return drink;
 };
 
 // Question class
 function Question (text, flavor) {
   this.text = text;
   this.flavor = flavor;
-  this.userAnswer = null;
-}
-/**
- * METHOD: questionAnswered
- * desc: Returns true/false based on if question has been answered
- * RETURNS - Boolean
- */
-Question.prototype.questionAnswered = function(){
-  return this.userAnswer !== null;
 }
 
-// Preferences class
-function Preferences (flavor)	{
+// Ingredient class
+function Ingredient (flavor, description)	{
 	this.flavor = flavor;
-	this.userPreference = null;
-}
-
-// Ingredients class
-function Ingredients (flavor, ingredient)	{
-	this.flavor = flavor;
-	this.ingredient = ingredient;
+	this.description = description;
 }
 
 // Pantry class
-function Pantry (ingredients, preferences) {
+function Pantry (ingredients) {
   this.ingredients = ingredients;
-	this.preferences = preferences;
 }
 
-Pantry.prototype.fetchRandom = function(ingredients, preferences) {
-	// Def var holding rndm ingredients
-	var filteredIngredients = [];
-	// loop through preferences and rndmly assign ingredient for each flavor where userAnswer = true.
-	for (var i = 0, alength=this.ingredients.length; i < alength; i++){
-			if (this.preferences[i].userPreference == true) {
-				filteredIngredients.push(this.ingredients[i].ingredient[(Math.floor((Math.random() * (3 - 0))))])
-			}
+Pantry.prototype.fetchRandom = function(flavor) {
+	var i,
+			loop = this.ingredients.length,
+			tempIngredient,
+			filteredIngredients = [];
+
+	for (i = 0; i < loop; i++){
+		tempIngredient = this.ingredients[i];
+		if (flavor === tempIngredient.flavor) {
+			filteredIngredients.push(tempIngredient);
 		}
-  return filteredIngredients;
+	}
+
+	var randomTarget = filteredIngredients.length;
+	var randomIndex = Math.floor(Math.random() * randomTarget);
+
+	return filteredIngredients[randomIndex];
 };
+
+function View() {
+}
+
+View.prototype.createQuestionTemplate = function (question) {
+	var html = "";
+
+	html += `
+		<div class="question-area">
+			<h3 class="flavor-${question.flavor}">${question.text}</h3>
+			<button class="user-answer" id="1-user-answer">Yes</button>
+			<button class="user-answer" id="0-user-answer">No</button>
+		</div>
+	`;
+
+	return html;
+};
+
+View.prototype.renderQuestion = function(element, question) {
+	var html = this.createQuestionTemplate(question);
+
+	element.html(html);
+};
+
+var view = new View();
 
 // STATIC DATA
 var Database = {
@@ -78,47 +118,77 @@ var Database = {
     new Question("Are ye a lubber who likes it bitter?", 'bitter'),
     new Question("Would ye like a bit of sweetness with yer poison?", 'sweet'),
     new Question("Are ye one for a fruity finish?", 'fruity')
-  ],
-	drinksPreferences: [
-		new Preferences('strong'),
-		new Preferences('salty'),
-		new Preferences('bitter'),
-		new Preferences('sweet'),
-		new Preferences('fruity'),
-	]
+  ]
 }
 
 // Drink ingredients
 var drinksIngredients = [
-	new Ingredients('Strong', ['Glug of rum', 'slug of whisky', 'splash of gin']),
-	new Ingredients('Salty', ['Olive on a stick', 'salt-dusted rim', 'rasher of bacon']),
-	new Ingredients('Bitter', ['Shake of bitters', 'splash of tonic', 'twist of lemon peel']),
-	new Ingredients('Sweet', ['Sugar cube', 'spoonful of honey', 'splash of cola']),
-	new Ingredients('Fruity', ['Slice of orange', 'dash of cassis', 'cherry on top'])
-	]
+	new Ingredient('strong', 'Glug of rum'),
+	new Ingredient('strong', 'Slug of whisky'),
+	new Ingredient('salty', 'salty thing'),
+	new Ingredient('sweet', 'sweet thing'),
+	new Ingredient('bitter', 'bitter thing'),
+	new Ingredient('fruity', 'fruity thing')
+];
+
+	// ADD INGREDIENTS
+	// , 'splash of gin']),
+	// new Ingredients('Salty', ['Olive on a stick', 'salt-dusted rim', 'rasher of bacon']),
+	// new Ingredients('Bitter', ['Shake of bitters', 'splash of tonic', 'twist of lemon peel']),
+	// new Ingredients('Sweet', ['Sugar cube', 'spoonful of honey', 'splash of cola']),
+	// new Ingredients('Fruity', ['Slice of orange', 'dash of cassis', 'cherry on top'])
 
 // var foodPantry = new Pantry([ /* array of ingredients */ ]);
 
 // on application load:
 $(function()	{
-	// 1) instantiate a bartender
+	var i, question;
+
 	var drinksBartender = new Bartender(Database.drinksQuestions);
-	// 2) bartender starts asking questions
-	for (var i=0, length=drinksBartender.questions.length; i<length; i++) {
-		// 3) user responds to each question
-		drinksBartender.askQuestions(drinksBartender.questions[i]);
-		// 4 Response for each ? rec in Preferences
-		Database.drinksPreferences[i].userPreference  = drinksBartender.questions[i].userAnswer;
-	};
-	// 5) bartender creates drink
-	var recipe = drinksBartender.createDrink();
-	// 6) log out drink info
-	console.log(recipe);
+	console.log('Instantiated bartender...', drinksBartender);
+
+	var pantry = new Pantry(drinksIngredients);
+	console.log('Instantiated pantry...', pantry);
+
+	console.log('starting questions...');
+	drinksBartender.startQuestions();
+
+	question = drinksBartender.fetchCurrentQuestion();
+
+	view.renderQuestion($('.question-area'), question);
+
+	// for ( i = 0; i < 5; i++) {
+	// 	question = drinksBartender.fetchCurrentQuestion();
+	// 	console.log('current question:', question.text);
+	// 	drinksBartender.onUserAnswer(true);
+	// 	drinksBartender.nextQuestion();
+	// }
+
+
+	$('#main').on('click', '.user-answer', function(evt){
+		var answer = parseInt(evt.target.id);
+		// use appropriate bartender method to store user preference
+
+
+		var question = drinksBartender.nextQuestion();
+
+		if (question) {
+			view.renderQuestion( $('.question-area') , question);
+		} else {
+			// no more questions!
+			// var drink = drinksBartender.createDrink(pantry)
+			// view.renderDrinkMade(drink)...
+		}
+
+		console.log(question);
+
+	});
+
 });
 
-	/*
-	 *  Notes
-	 */
+
+
+
 
 // drinksBartender.questions[0].text
 // drinksBartender.questions[0].flavor // => 'strong'
