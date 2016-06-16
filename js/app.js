@@ -23,7 +23,7 @@ Bartender.prototype.fetchCurrentQuestion = function() {
  */
 Bartender.prototype.nextQuestion = function(){
 	// check if we're at the last question...
-	if (this.currentQuestion == 4) {
+	if (this.currentQuestion == (this.questions.length)-1) {
     return false;
   }
 
@@ -216,7 +216,7 @@ $(document).one('keypress', function()	{
       // Get next question
       var question = drinksBartender.nextQuestion();
         // If not on last question
-        if (quesCount < 4) {
+        if (quesCount <  (drinksBartender.questions.length)-1) {
           // render question
           view.renderQuestion($('.textBox'), question);
         } else {
@@ -230,7 +230,7 @@ $(document).one('keypress', function()	{
         var answer = false;
         drinksBartender.onUserAnswer(answer);
         var question = drinksBartender.nextQuestion();
-        if (quesCount < 4) {
+        if (quesCount < (drinksBartender.questions.length)-1)  {
           view.renderQuestion($('.textBox'), question);
         } else {
           var drink = drinksBartender.createDrink(pantry);
