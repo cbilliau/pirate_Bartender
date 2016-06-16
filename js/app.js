@@ -23,7 +23,9 @@ Bartender.prototype.fetchCurrentQuestion = function() {
  */
 Bartender.prototype.nextQuestion = function(){
 	// check if we're at the last question...
-	// if ( ) {}
+	if (this.currentQuestion == 4) {
+    return false;
+  }
 
 	++this.currentQuestion;
 	return this.questions[this.currentQuestion];
@@ -108,6 +110,32 @@ View.prototype.clearTextBox = function() {
 	$('.textBox').clear();
 }
 
+View.prototype.createDrinkTemplate = function (drink) {
+	var html = "";
+  drink.forEach(function(item) {
+    html += "<p>   • " + item + "</p>";
+  });
+	html += "<h4>[PRESS Y TO ORDER AGAIN]</h4>";
+	return html;
+};
+
+View.prototype.createDrinkName = function() {
+  var drinkName = "";
+  var i = null, n = null;
+  i = Math.floor((Math.random() * 10));
+  n = Math.floor((Math.random() * 10));
+  drinkName += "<p> Yar! The '" + Database.firstName[i] + " " + Database.lastName[n] + "' it be, Matey.</p>";
+  return drinkName;
+};
+
+View.prototype.renderDrink = function (element, drink) {
+  var html = this.createDrinkTemplate(drink);
+  var drinkName = this.createDrinkName();
+  view.clearTextBox;
+  element.html(drinkName);
+  console.log(drinkName);
+	element.html(drinkName + html);
+};
 var view = new View();
 
 // STATIC DATA
@@ -119,6 +147,30 @@ var Database = {
     new Question("Are ye a lubber who likes it bitter?", 'bitter'),
     new Question("Would ye like a bit of sweetness with yer poison?", 'sweet'),
     new Question("Are ye one for a fruity finish?", 'fruity')
+  ],
+  firstName: [
+    "Hairy",
+    "Swing'n",
+    "Skipper's",
+    "Stagger'n",
+    "Sloppy",
+    "Kiss'n",
+    "Shakey",
+    "Bitter",
+    "Coiled",
+    "Lazy"
+  ],
+  lastName: [
+    "Monkey Fist",
+    "Rudder",
+    "Main",
+    "Bos'n",
+    "Mermaid",
+    "Snatchblock",
+    "Manrope",
+    "Jackstaff",
+    "Limber-hole",
+    "Prop"
   ]
 }
 
@@ -135,121 +187,56 @@ var drinksIngredients = [
 	new Ingredient('sweet', 'Splash of cola'),
 	new Ingredient('bitter', 'Shake of bitters'),
 	new Ingredient('bitter', 'Splash of tonic'),
-	new Ingredient('bitter', 'twist of lemon peel'),
+	new Ingredient('bitter', 'Twist of lemon peel'),
 	new Ingredient('fruity', 'Slice of orange'),
 	new Ingredient('fruity', 'Dash of cassis'),
 	new Ingredient('fruity', 'cherry on top')
 ];
 
-
-// on application load:
-// $(function()	{
-
-
-	// question = drinksBartender.fetchCurrentQuestion();
-
 $(document).one('keypress', function()	{
-		 console.log('key pressed');
-
   var i, question;
-
   var drinksBartender = new Bartender(Database.drinksQuestions);
    console.log('Instantiated bartender...', drinksBartender);
-
   var pantry = new Pantry(drinksIngredients);
    console.log('Instantiated pantry...', pantry);
-
   view.clearTextBox;
-
   drinksBartender.startQuestions();
    console.log('starting questions...');
-
   var question = drinksBartender.fetchCurrentQuestion();
-   console.log(question);
   view.renderQuestion($('.textBox'), question);
 
-
 	$(document).on('keydown', function(event) {
-
+    // Set var to question count
+    var quesCount = drinksBartender.currentQuestion;
+    // If 'y' pressed
     if(event.which == 89) {
       var answer = true;
+      // Set user answer to True
       drinksBartender.onUserAnswer(answer);
-    console.log(drinksBartender.userPreferences);
+      // Get next question
       var question = drinksBartender.nextQuestion();
-      view.renderQuestion($('.textBox'), question);
+        // If not on last question
+        if (quesCount < 4) {
+          // render question
+          view.renderQuestion($('.textBox'), question);
+        } else {
+          // else render drink
+          var drink = drinksBartender.createDrink(pantry);
+          view.renderDrink($('.textBox'), drink);
+          drinksBartender.startQuestions();
+        }
+      // If 'n' pressed
     } else if (event.which == 78) {
-      var answer = false;
-      drinksBartender.onUserAnswer(answer);
-    console.log(drinksBartender.userPreferences);
-      var question = drinksBartender.nextQuestion();
-      view.renderQuestion($('.textBox'), question);
-    }
-
-  })
+        var answer = false;
+        drinksBartender.onUserAnswer(answer);
+        var question = drinksBartender.nextQuestion();
+        if (quesCount < 4) {
+          view.renderQuestion($('.textBox'), question);
+        } else {
+          var drink = drinksBartender.createDrink(pantry);
+          view.renderDrink($('.textBox'), drink);
+          drinksBartender.startQuestions();
+        }
+     }
+   })
 })
-
-    // Switch to .keypress    'click', '.user-answer', function(evt){
-
-
-	// 	// var answer = parseInt(evt.target.id);
-  //
-  //
-    // use appropriate bartender method to store user preference
-
-
-	// 	var question = drinksBartender.nextQuestion();
-  //
-	// 	if (question) {
-	// 		view.renderQuestion( $('.question-area') , question);
-	// 	} else {
-	// 		// no more questions!
-	// 		// var drink = drinksBartender.createDrink(pantry)
-	// 		// view.renderDrinkMade(drink)...
-	// 	}
-  //
-	// 	console.log(question);
-  //
-	// });
-
-// });
-
-
-
-
-
-	// for ( i = 0; i < 5; i++) {
-	// 	question = drinksBartender.fetchCurrentQuestion();
-	// 	console.log('current question:', question.text);
-	// 	drinksBartender.onUserAnswer(true);
-	// 	drinksBartender.nextQuestion();
-	// }
-
-// drinksBartender.questions[0].text
-// drinksBartender.questions[0].flavor // => 'strong'
-// drinksBartender.questions[0].userAnswer = true;
-// drinksBartender.questions[0].questionAnswered // => true/false?
-
-// ADD INGREDIENTS
-// , 'splash of gin']),
-// new Ingredients('Salty', ['Olive on a stick', 'salt-dusted rim', 'rasher of bacon']),
-// new Ingredients('Bitter', ['Shake of bitters', 'splash of tonic', 'twist of lemon peel']),
-// new Ingredients('Sweet', ['Sugar cube', 'spoonful of honey', 'splash of cola']),
-// new Ingredients('Fruity', ['Slice of orange', 'dash of cassis', 'cherry on top'])
-
-// var foodPantry = new Pantry([ /* array of ingredients */ ]);
-
-
-// Class -- blueprint for objects
-  // classes should begin with capital letters
-// Instances -- objects created from a Class
-  // instances should begin with lowercase letters
-
-// Original notes from createDrink
-		// this.ingredients.forEach(function(item,index){
-		  // 	console.log(item, index);
-			// if (ingredient.flavor === flavor) {
-			// 	filteredIngredients.push(ingredient);
-			// }   // determine length of filteredIngredients; select random index of array; return element at random index
-
-
-// you definitely want to create a preferences object of some kind that the bartender holds onto -- you don't want the userResponse in the question object.  thinking about if the bartender needs to serve multiple drinks, he needs to be able to erase the preferences object and start again.  if the info's being logged in the question objects, you've got to recreate 5 question objects every time which doesn't make sense since they're mostly static data.
