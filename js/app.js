@@ -108,11 +108,6 @@ View.prototype.clearTextBox = function() {
 	$('.textBox').clear();
 }
 
-View.prototype.startApp = function(element) {
-  var html = "<p>Ye look as dry as a barnacle at low tide, matey. Let me make ye a drink?</p><h4>[PRESS Y OR N]</h4>";
-
-  element.html(html);
-}
 var view = new View();
 
 // STATIC DATA
@@ -155,48 +150,66 @@ var drinksIngredients = [
 
 $(document).one('keypress', function()	{
 		 console.log('key pressed');
+
+  var i, question;
+
+  var drinksBartender = new Bartender(Database.drinksQuestions);
+   console.log('Instantiated bartender...', drinksBartender);
+
+  var pantry = new Pantry(drinksIngredients);
+   console.log('Instantiated pantry...', pantry);
+
   view.clearTextBox;
-  view.startApp($('.textBox'));
-	})
-  //Begin questions
-	$(document).on(// Switch to .keypress    'click', '.user-answer', function(evt){
-		// var answer = parseInt(evt.target.id);
-    var i, question;
-    var drinksBartender = new Bartender(Database.drinksQuestions);
-     console.log('Instantiated bartender...', drinksBartender);
-    var pantry = new Pantry(drinksIngredients);
-     console.log('Instantiated pantry...', pantry);
-     console.log('starting questions...');
-    drinksBartender.startQuestions();
-    view.clearTextBox;
-    var question = drinksBartender.nextQuestion();
-      console.log(question);
-    view.renderQuestion($('.textBox'), question);
+
+  drinksBartender.startQuestions();
+   console.log('starting questions...');
+
+  var question = drinksBartender.fetchCurrentQuestion();
+   console.log(question);
+  view.renderQuestion($('.textBox'), question);
 
 
+	$(document).on('keydown', function(event) {
+
+    if(event.which == 89) {
+      var answer = true;
+      drinksBartender.onUserAnswer(answer);
+    console.log(drinksBartender.userPreferences);
+      var question = drinksBartender.nextQuestion();
+      view.renderQuestion($('.textBox'), question);
+    } else if (event.which == 78) {
+      var answer = false;
+      drinksBartender.onUserAnswer(answer);
+    console.log(drinksBartender.userPreferences);
+      var question = drinksBartender.nextQuestion();
+      view.renderQuestion($('.textBox'), question);
+    }
+
+  })
+})
+
+    // Switch to .keypress    'click', '.user-answer', function(evt){
 
 
-
-
-
-
-
+	// 	// var answer = parseInt(evt.target.id);
+  //
+  //
     // use appropriate bartender method to store user preference
 
 
-		var question = drinksBartender.nextQuestion();
-
-		if (question) {
-			view.renderQuestion( $('.question-area') , question);
-		} else {
-			// no more questions!
-			// var drink = drinksBartender.createDrink(pantry)
-			// view.renderDrinkMade(drink)...
-		}
-
-		console.log(question);
-
-	});
+	// 	var question = drinksBartender.nextQuestion();
+  //
+	// 	if (question) {
+	// 		view.renderQuestion( $('.question-area') , question);
+	// 	} else {
+	// 		// no more questions!
+	// 		// var drink = drinksBartender.createDrink(pantry)
+	// 		// view.renderDrinkMade(drink)...
+	// 	}
+  //
+	// 	console.log(question);
+  //
+	// });
 
 // });
 
