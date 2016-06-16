@@ -91,11 +91,8 @@ View.prototype.createQuestionTemplate = function (question) {
 	var html = "";
 
 	html += `
-		<div class="question-area">
-			<h3 class="flavor-${question.flavor}">${question.text}</h3>
-			<button class="user-answer" id="1-user-answer">Yes</button>
-			<button class="user-answer" id="0-user-answer">No</button>
-		</div>
+			<p class="flavor-${question.flavor}">${question.text}</p>
+			<h4 class="user-answer" id="user-answer">[PRESS Y or N]</h4>
 	`;
 
 	return html;
@@ -107,6 +104,15 @@ View.prototype.renderQuestion = function(element, question) {
 	element.html(html);
 };
 
+View.prototype.clearTextBox = function() {
+	$('.textBox').clear();
+}
+
+View.prototype.startApp = function(element) {
+  var html = "<p>Ye look as dry as a barnacle at low tide, matey. Let me make ye a drink?</p><h4>[PRESS Y OR N]</h4>";
+
+  element.html(html);
+}
 var view = new View();
 
 // STATIC DATA
@@ -125,49 +131,57 @@ var Database = {
 var drinksIngredients = [
 	new Ingredient('strong', 'Glug of rum'),
 	new Ingredient('strong', 'Slug of whisky'),
-	new Ingredient('salty', 'salty thing'),
-	new Ingredient('sweet', 'sweet thing'),
-	new Ingredient('bitter', 'bitter thing'),
-	new Ingredient('fruity', 'fruity thing')
+  new Ingredient('strong', 'Splash of gin'),
+	new Ingredient('salty', 'Olive on a stick'),
+	new Ingredient('salty', 'Salt-dusted rim'),
+	new Ingredient('salty', 'Rasher of bacon'),
+	new Ingredient('sweet', 'Sugar cube'),
+	new Ingredient('sweet', 'Spoonful of honey'),
+	new Ingredient('sweet', 'Splash of cola'),
+	new Ingredient('bitter', 'Shake of bitters'),
+	new Ingredient('bitter', 'Splash of tonic'),
+	new Ingredient('bitter', 'twist of lemon peel'),
+	new Ingredient('fruity', 'Slice of orange'),
+	new Ingredient('fruity', 'Dash of cassis'),
+	new Ingredient('fruity', 'cherry on top')
 ];
 
-	// ADD INGREDIENTS
-	// , 'splash of gin']),
-	// new Ingredients('Salty', ['Olive on a stick', 'salt-dusted rim', 'rasher of bacon']),
-	// new Ingredients('Bitter', ['Shake of bitters', 'splash of tonic', 'twist of lemon peel']),
-	// new Ingredients('Sweet', ['Sugar cube', 'spoonful of honey', 'splash of cola']),
-	// new Ingredients('Fruity', ['Slice of orange', 'dash of cassis', 'cherry on top'])
-
-// var foodPantry = new Pantry([ /* array of ingredients */ ]);
 
 // on application load:
-$(function()	{
-	var i, question;
-
-	var drinksBartender = new Bartender(Database.drinksQuestions);
-	console.log('Instantiated bartender...', drinksBartender);
-
-	var pantry = new Pantry(drinksIngredients);
-	console.log('Instantiated pantry...', pantry);
-
-	console.log('starting questions...');
-	drinksBartender.startQuestions();
-
-	question = drinksBartender.fetchCurrentQuestion();
-
-	view.renderQuestion($('.question-area'), question);
-
-	// for ( i = 0; i < 5; i++) {
-	// 	question = drinksBartender.fetchCurrentQuestion();
-	// 	console.log('current question:', question.text);
-	// 	drinksBartender.onUserAnswer(true);
-	// 	drinksBartender.nextQuestion();
-	// }
+// $(function()	{
 
 
-	$('#main').on('click', '.user-answer', function(evt){
-		var answer = parseInt(evt.target.id);
-		// use appropriate bartender method to store user preference
+	// question = drinksBartender.fetchCurrentQuestion();
+
+$(document).one('keypress', function()	{
+		 console.log('key pressed');
+  view.clearTextBox;
+  view.startApp($('.textBox'));
+	})
+  //Begin questions
+	$(document).on(// Switch to .keypress    'click', '.user-answer', function(evt){
+		// var answer = parseInt(evt.target.id);
+    var i, question;
+    var drinksBartender = new Bartender(Database.drinksQuestions);
+     console.log('Instantiated bartender...', drinksBartender);
+    var pantry = new Pantry(drinksIngredients);
+     console.log('Instantiated pantry...', pantry);
+     console.log('starting questions...');
+    drinksBartender.startQuestions();
+    view.clearTextBox;
+    var question = drinksBartender.nextQuestion();
+      console.log(question);
+    view.renderQuestion($('.textBox'), question);
+
+
+
+
+
+
+
+
+
+    // use appropriate bartender method to store user preference
 
 
 		var question = drinksBartender.nextQuestion();
@@ -184,16 +198,32 @@ $(function()	{
 
 	});
 
-});
+// });
 
 
 
 
+
+	// for ( i = 0; i < 5; i++) {
+	// 	question = drinksBartender.fetchCurrentQuestion();
+	// 	console.log('current question:', question.text);
+	// 	drinksBartender.onUserAnswer(true);
+	// 	drinksBartender.nextQuestion();
+	// }
 
 // drinksBartender.questions[0].text
 // drinksBartender.questions[0].flavor // => 'strong'
 // drinksBartender.questions[0].userAnswer = true;
 // drinksBartender.questions[0].questionAnswered // => true/false?
+
+// ADD INGREDIENTS
+// , 'splash of gin']),
+// new Ingredients('Salty', ['Olive on a stick', 'salt-dusted rim', 'rasher of bacon']),
+// new Ingredients('Bitter', ['Shake of bitters', 'splash of tonic', 'twist of lemon peel']),
+// new Ingredients('Sweet', ['Sugar cube', 'spoonful of honey', 'splash of cola']),
+// new Ingredients('Fruity', ['Slice of orange', 'dash of cassis', 'cherry on top'])
+
+// var foodPantry = new Pantry([ /* array of ingredients */ ]);
 
 
 // Class -- blueprint for objects
