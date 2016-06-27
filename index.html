@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="styles/styles.css">
-	<meta text="Pirate image taken from Sid Meier's 'Pirates'.">
-	<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-	<title>Pirate Bartender</title>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="styles/styles.css">
+		<meta text="Pirate image taken from Sid Meier's 'Pirates'.">
+		<link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+		<title>Pirate Bartender</title>
+	</head>
 
-<body>
-	<div id="main">
+	<body>
+		<div id="main">
 
-		<!-- Title -->
-		<div class="gameName">
-			<h3>The Pirate Bartender</h3>
+			<!-- Title -->
+			<div class="gameName">
+				<h3>The Pirate Bartender</h3>
+			</div>
+
+			<!-- Display priate image -->
+			<div class="imgBox">
+				<img src="images/bartender.png" width=250px height=300px alt="image of pirate needing braces">
+			</div>
+
+			<!-- Text area -->
+			<div class="textBox">
+				<p>Yargh!</p>
+				<p>Welecome to "Barnacle Bill's Pirate Bar".</p>
+				<p>I'm Petey, yer bartender 'n host.</p>
+				<p>Ye look as dry as a barnacle at low tide, matey. Let me make ye a drink?</p>
+				<h4>[PRESS ANY KEY]</h4>
+			</div>
+			<div class="imgNameBox"></div>
+
 		</div>
 
-		<!-- Display priate image -->
-		<div class="imgBox">
-			<img src="images/bartender.png" width=250px height=300px alt="image">
-		</div>
+		<!-- scripts -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+		<script src="js/app.js"></script>
 
-		<!-- Text area -->
-		<div class="textBox">
-			<p>Yargh!</p>
-			<p>Welecome to "Barnacle Bill's Pirate Bar".</p>
-			<p>I'm Petey, yer bartender 'n host.</p>
-			<p>Ye look as dry as a barnacle at low tide, matey. Let me make ye a drink?</p>
-			<h4>[PRESS ANY KEY]</h4>
-		</div>
-		<div class="imgNameBox"></div>
+		<!-- Audio -->
+		<audio controls autoplay>
+			<source src="https://comhaltas.ie/images/music/SonnyMurray.mp3" type="audio/mp">
+		</audio>
 
-	</div>
-
-	<!-- scripts -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
-	<script src="js/app.js"></script>
-
-	<!-- Audio -->
-	<audio controls autoplay>
-		<source src="https://comhaltas.ie/images/music/SonnyMurray.mp3" type='audio/mp3'>
-	</audio>
-
-</body>
+	</body>
 
 </html>
